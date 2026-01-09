@@ -17,6 +17,173 @@ A custom Frappe app for managing internal requests with an approval workflow tha
 - SSH access to the VM
 - Basic command line knowledge
 
+## Installing This App on a Fresh VM (Reproducible Setup)
+
+This section explains how to install and run the **Internal Request Management (IRM)** app on a brand new Ubuntu virtual machine.
+
+### 1. Provision a Fresh VM
+
+* OS: **Ubuntu 20.04+**
+* Ensure the VM has:
+
+  * Internet access
+  * SSH access
+  * At least **2 GB RAM** (4 GB recommended)
+
+SSH into the VM:
+
+```bash
+ssh user@<vm-ip>
+```
+
+---
+
+### 2. System Dependencies
+
+```bash
+sudo apt update && sudo apt upgrade -y
+
+sudo apt install -y \
+  git redis-server mariadb-server mariadb-client \
+  libmariadb-dev pkg-config xvfb libfontconfig
+```
+
+Secure MariaDB and create a dedicated `frappe` user:
+
+```bash
+sudo mariadb-secure-installation
+```
+
+Inside MariaDB:
+
+```sql
+CREATE USER 'frappe'@'localhost' IDENTIFIED BY 'frappe';
+GRANT ALL PRIVILEGES ON *.* TO 'frappe'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+---
+
+### 3. Install Node.js, Python, and Bench
+
+#### Node.js (via NVM)
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+
+nvm install 24
+npm install -g yarn
+```
+
+#### Python (via UV)
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc
+
+uv python install 3.14 --default
+```
+
+#### Install Bench
+
+```bash
+uv tool install frappe-bench
+```
+
+---
+
+### 4. Initialize Bench and Create Site
+
+```bash
+bench init frappe-bench
+cd frappe-bench
+source env/bin/activate
+```
+
+Create a new site:
+
+```bash
+bench new-site internal_req_mgmt.localhost
+```
+
+* MariaDB username: `frappe`
+* MariaDB password: `frappe`
+* Set Administrator password as prompted
+
+---
+
+### 5. Clone and Install the IRM App
+
+Clone the app repository into the `apps` directory:
+
+```bash
+cd apps
+git clone <YOUR_GITHUB_REPO_URL>
+cd ..
+```
+
+Install the app on the site:
+
+```bash
+bench --site internal_req_mgmt.localhost install-app irm
+```
+
+Set the site as default:
+
+```bash
+bench use internal_req_mgmt.localhost
+```
+
+Enable developer mode (recommended for evaluation):
+
+```bash
+bench set-config -g developer_mode 1
+```
+
+---
+
+### 6. Start the Application
+
+```bash
+bench start
+```
+
+Open the browser:
+
+```
+http://<vm-ip>:8000
+```
+
+If the setup wizard UI appears broken (known dev issue), skip it:
+
+```bash
+bench --site internal_req_mgmt.localhost set-config setup_complete 1
+bench restart
+```
+
+Then go directly to:
+
+```
+http://<vm-ip>:8000/desk
+```
+
+---
+
+### Final Verification
+
+* Log in as **Administrator**
+* Confirm:
+
+  * `Internal Request` DocType exists
+  * Workflow actions (Submit / Approve / Reject) are visible
+  * Roles (`Requester`, `Manager`) are present
+  * Self-approval is blocked correctly
+
+At this point, the app is fully installed and functional on a new VM.
+
+
 ## VM Setup
 
 ### 1. Update System Packages
