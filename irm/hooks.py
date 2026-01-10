@@ -5,6 +5,16 @@ app_description = "An app for internal request management system"
 app_email = "aryanshandilya10@gmail.com"
 app_license = "mit"
 
+fixtures = [
+    "Custom Field",
+    "Property Setter",
+    "Role",
+    "Workflow",
+    "Workflow State",
+    "Workflow Action Master",
+]
+
+
 # Apps
 # ------------------
 
