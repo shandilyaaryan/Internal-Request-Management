@@ -6,13 +6,28 @@ app_email = "aryanshandilya10@gmail.com"
 app_license = "mit"
 
 fixtures = [
-    "Custom Field",
-    "Property Setter",
-    "Role",
-    "Workflow",
-    "Workflow State",
-    "Workflow Action Master",
+    {
+        "dt": "Workflow",
+        "filters": [["document_type", "=", "Internal Request"]]
+    },
+    {
+        "dt": "Workflow State",
+        "filters": [["name", "in", ["Draft", "Submitted", "Approved", "Rejected"]]]
+    },
+    {
+        "dt": "Custom DocPerm",
+        "filters": [["parent", "=", "Internal Request"]]
+    },
+    {
+        "dt": "Role",
+        "filters": [["name", "in", ["Requester", "Manager"]]]
+    },
+    {
+        "dt": "Property Setter",
+        "filters": [["module", "=", "IRM"]]
+    }
 ]
+
 
 
 # Apps
