@@ -11,26 +11,29 @@ fixtures = [
         "filters": [["document_type", "=", "Internal Request"]]
     },
     {
-        "dt": "Workflow State",
-        "filters": [["name", "in", ["Draft", "Submitted", "Approved", "Rejected"]]]
+        "dt": "Workflow State"
     },
     {
-        "dt": "Custom DocPerm",
-        "filters": [["parent", "=", "Internal Request"]]
+        "dt": "Workflow Transition"
+    },
+    {
+        "dt": "Workflow Action Master"
     },
     {
         "dt": "Role",
         "filters": [["name", "in", ["Requester", "Manager"]]]
     },
     {
+        "dt": "Custom DocPerm",
+        "filters": [["parent", "=", "Internal Request"]]
+    },
+    {
         "dt": "Property Setter",
-        "filters": [["module", "=", "IRM"]]
+        "filters": [["doc_type", "=", "Internal Request"]]
     }
 ]
 
 
-
-# Apps
 # ------------------
 
 # required_apps = []
